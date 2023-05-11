@@ -1,5 +1,7 @@
 import { createStore } from 'vuex';
 import {RepositoryFactory} from './api/RepositoryFactory';
+import VueCookies from 'vue-cookies';
+import router from './router';
 const FirearmRepository = RepositoryFactory.get('firearm');
 const AmmoRepository = RepositoryFactory.get('ammo');
 const ManufacturerRepository = RepositoryFactory.get('manufacturer');
@@ -10,7 +12,6 @@ const AmmoPurchaseRepository = RepositoryFactory.get('ammoPurchase');
 const AuthRepository = RepositoryFactory.get('authorization');
 
 //import VueCookies from 'vue-cookies'
-//import router from './router'
 //import AuthRepository from './api/AuthRepository'
 
 const state = {
@@ -26,6 +27,30 @@ const state = {
   pendingShoot:{}
 }
 const actions = {
+  authenticate({commit},payload){
+    AuthRepository.authenticate(payload.username,payload.password).then((response)=>{
+      if(!response.data['error']){
+        commit('setAuthToken',response.data.token);
+        //this.dispatch(''); //todo init app here.
+        router.push('home');
+      }else{
+        throw new Error(`API ${response.data['error']}`);
+      }
+    });
+  },
+  verifyToken({commit},payload){
+    AuthRepository.verify(payload.auth_token).then((response)=>{
+      if(!response.data['error']){
+        commit('setAuthToken',response.data.auth_token);
+        if(router.currentRoute.Path == '/'){
+          //this.dispatch() //todo init app here.
+          router.push('home');
+        }
+      }else{
+        router.push('/');
+      }
+    });
+  },
   getFirearms({commit}){
     FirearmRepository.setAuthToken(this.state.auth_token);
     FirearmRepository.get().then((response)=>{
@@ -205,7 +230,7 @@ const actions = {
   deleteManufacturer({commit},payload){
     ManufacturerRepository.setAuthToken(this.state.auth_token);
     return ManufacturerRepository.delete(payload).then((resposne)=>{
-      commit('deleteVendor',payload);
+      commit('deleteManufacturer',payload);
     });
   },
   deleteCaliber({commit},payload){
@@ -220,6 +245,12 @@ const actions = {
       commit('deleteAmmo',payload);
     });
   },
+  deleteAmmoPurchase({commit},payload){
+    AmmoPurchaseRepository.setAuthToken(this.state.auth_token);
+    return AmmoPurchaseRepository.delete(payload).then((response)=>{
+      commit('deleteAmmoPurchase',payload);
+    });
+  },
   deleteFirearm({commit},payload){
     FirearmRepository.setAuthToken(this.state.auth_token);
     return FirearmRepository.delete(payload).then((response)=>{
@@ -228,6 +259,10 @@ const actions = {
   }
 }
 const mutations = {
+  setAuthToken(state,auth_token){
+    VueCookies.set('auth_token',auth_token,'4h');
+    state.auth_token = auth_token;
+  },
   addFirearm(state,firearm){
     state.firearms.push(firearm);
   },
@@ -298,6 +333,9 @@ const mutations = {
   },
   deleteAmmo(state,id){
     state.ammo.splice(state.ammo.findIndex((e)=>{ return e.Id == id}),1);
+  },
+  deleteAmmoPurchase(state,id){
+    state.ammoPurchases.splice(state.ammoPurchases.findIndex((e)=>{ return e.Id == id}),1);
   },
   deleteFirearm(state,id){
     state.firearms.splice(state.firearms.findIndex((e)=>{ return e.Id == id}),1);

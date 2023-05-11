@@ -17,7 +17,7 @@ export default{
   },
   methods:{
     setEdit(id){
-      this.editId = id;
+      this.editId = this.editId == id ? null:id;
     }
   },
   data: ()=> ({editId:null,newRecord:false}),

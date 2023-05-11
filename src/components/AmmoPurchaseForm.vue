@@ -65,6 +65,18 @@ export default{
       }
       this.editId = null;
       Object.keys(this.form).forEach((k)=>{this.form[k] = null});
+    },
+    async deletePurchase(){
+      try{
+        this.$store.dispatch('deleteAmmoPurchase',this.editId);
+        toast("Changes Saved!",{type:'success',autoClose:2000});
+        this.editing = false;
+      }catch(err){
+        toast(err + "\nSee console for details.",{type:'error',autoClose:3000});
+        return;
+      }
+      this.editId = null;
+      Object.keys(this.form).forEach((k)=>{this.form[k] = null});
     }
   },
   mounted(){},
@@ -135,6 +147,7 @@ export default{
       <v-card-actions>
         <v-btn v-if="!editing" type="submit">Submit</v-btn>
         <v-btn v-if="editing" @click="receivePurchase">Receive</v-btn>
+        <v-btn v-if="editing" @click="deletePurchase">Delete</v-btn>
       </v-card-actions>
     </v-card>
   </v-form>

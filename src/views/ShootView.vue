@@ -12,8 +12,13 @@ export default{
   props:{},
   computed:{
     shoots(){
+      let ammo = this.$store.state.ammo;
+      let firearms = this.$store.state.firearms;
       return this.$store.state.shoots.map((e)=>{
-        e.Display = e.Id + '/' + e.FireArm + '/' + e.Rounds;
+        let ammoObj = ammo.filter((a)=>{ return a.Id == e.Ammo })[0];
+        let firearmObj = firearms.filter((f)=>{ return f.Id == e.FireArm })[0];
+        //e.Display = firearmObj.Model + '|' + firearmObj.Serial_Number + '|' + e.Rounds;
+        e.Display = e.Id;
         return e;
       });
     },
@@ -23,7 +28,7 @@ export default{
   },
   methods:{
     setSelected(id){
-      this.selectedId = id;
+      this.selectedId = this.selectedId == id ? null:id;
       this.$store.dispatch('getShootTargets',this.selectedId);
     },
     toggleNewForm(){

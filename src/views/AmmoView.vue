@@ -25,18 +25,24 @@ export default{
       });
     },
     pendingPurchases(){
+      let vendors = this.$store.state.vendors;
+      let calibers = this.$store.state.calibers;
+      let ammos = this.$store.state.ammo;
       return this.$store.state.ammoPurchases.filter((e)=>{
         let date = new Date(e.DateReceived);
         return isNaN(date.getTime());
       }).map((a)=>{
-        a.Display = a.DatePurchased;
+        let ammoObj = ammos.filter((am)=>{ return am.Id == a.Ammo})[0];
+        let caliberObj = calibers.filter((c)=>{ return c.Id == ammoObj.Caliber})[0];
+        let vendorObj = vendors.filter((v)=>{ return v.Id == a.Vendor})[0];
+        a.Display = vendorObj.Name + ' | ' + caliberObj.Label + ' | ' + a.DatePurchased.split(' ')[0] + '(' + a.Rounds + ')';
         return a;
       });
     }
   },
   methods:{
     setEdit(id){
-      this.editId = id;
+      this.editId = this.editId == id ? null:id;
     },
     toggleNewForm(){
       this.newRecord = !this.newRecord;
