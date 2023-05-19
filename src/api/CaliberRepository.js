@@ -1,6 +1,6 @@
 import Repository from './Repository';
 
-const baseDomain = process.env.NODE_ENV == 'production' ? 'https://api.outlawdesigns.io:8420':'http://localhost:8420';
+const baseDomain = process.env.NODE_ENV == 'production' ? 'https://api.outlawdesigns.io:8420':'http://localhost:9912';
 const baseUrl = `${baseDomain}`;
 const resource = '/caliber';
 
@@ -10,6 +10,9 @@ export default{
   },
   setAuthToken(auth_token){
     Repository.defaults.headers.get['auth_token'] = auth_token;
+    Repository.defaults.headers.put['auth_token'] = auth_token;
+    Repository.defaults.headers.post['auth_token'] = auth_token;
+    Repository.defaults.headers.delete['auth_token'] = auth_token;
   },
   get(){
     this.setDomain();

@@ -18,6 +18,9 @@ export default{
   methods:{
     setEdit(id){
       this.editId = this.editId == id ? null:id;
+    },
+    toggleNewForm(){
+      this.newRecord = !this.newRecord;
     }
   },
   data: ()=> ({editId:null,newRecord:false}),

@@ -27,11 +27,20 @@ const state = {
   pendingShoot:{}
 }
 const actions = {
+  init(){
+    this.dispatch('getManufacturers');
+    this.dispatch('getCalibers');
+    this.dispatch('getFirearms');
+    this.dispatch('getAmmo');
+    this.dispatch('getVendors');
+    this.dispatch('getShoots');
+    this.dispatch('getAmmoPurchases');
+  },
   authenticate({commit},payload){
     AuthRepository.authenticate(payload.username,payload.password).then((response)=>{
       if(!response.data['error']){
         commit('setAuthToken',response.data.token);
-        //this.dispatch(''); //todo init app here.
+        this.dispatch('init');
         router.push('home');
       }else{
         throw new Error(`API ${response.data['error']}`);
@@ -42,8 +51,8 @@ const actions = {
     AuthRepository.verify(payload.auth_token).then((response)=>{
       if(!response.data['error']){
         commit('setAuthToken',response.data.auth_token);
-        if(router.currentRoute.Path == '/'){
-          //this.dispatch() //todo init app here.
+        if(router.currentRoute.value.path == '/'){
+          this.dispatch('init');
           router.push('home');
         }
       }else{

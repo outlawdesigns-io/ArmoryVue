@@ -1,7 +1,7 @@
 <template>
   <form>
     <div class="imgcontainer">
-        <img src="http://loe.outlawdesigns.io/Pictures/error/logo.png" alt="avatar" class="avatar">
+        <img src="https://loe.outlawdesigns.io/Pictures/error/logo.png" alt="avatar" class="avatar">
     </div>
     <div class="container">
         <!-- <h5 style="color:red">{{login.errorMsg}}</h5> -->
@@ -15,6 +15,9 @@
 </template>
 
 <script>
+
+import VueCookies from 'vue-cookies';
+
 export default {
   name: 'Login',
   props: {},
@@ -32,6 +35,9 @@ export default {
       }
       this.$store.dispatch('authenticate',{username:this.username,password:this.password});
     }
+  },
+  created(){
+    this.$store.dispatch('verifyToken',{auth_token:VueCookies.get('auth_token')});
   }
 }
 </script>

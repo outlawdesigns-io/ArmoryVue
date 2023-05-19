@@ -1,23 +1,24 @@
 <script setup>
-import { useStore } from 'vuex';
+// import { useStore } from 'vuex';
+// import { ref,computed } from 'vue';
 
-import TheWelcome from '../components/TheWelcome.vue'
-import ManufacturerView from './ManufacturerView.vue'
+import TotalAmmoList from '../components/TotalAmmoList.vue';
 
-const store = useStore();
 
-//break these out into a store.init on prod
-store.dispatch('getManufacturers');
-store.dispatch('getCalibers');
-store.dispatch('getFirearms');
-store.dispatch('getAmmo');
-store.dispatch('getVendors');
-store.dispatch('getShoots');
-store.dispatch('getAmmoPurchases');
 
 </script>
 
 <template>
-  <!-- <ManufacturerView></ManufacturerView> -->
-  <!-- <TheWelcome /> -->
+  <v-container>
+    <v-row>
+      <v-col cols="12" sm="2">
+        <TotalAmmoList></TotalAmmoList>
+      </v-col>
+      <v-col cols="12" sm="2"><p>Test</p></v-col>
+      <v-col cols="12" sm="2"><p>Test</p></v-col>
+      <v-col cols="12" sm="2"><p>Test</p></v-col>
+      <v-col cols="12" sm="2"><p>Test</p></v-col>
+      <v-col cols="12" sm="2"><p>Test</p></v-col>
+    </v-row>
+  </v-container>
 </template>
