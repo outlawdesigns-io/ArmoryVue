@@ -37,7 +37,7 @@ export default {
     }
   },
   created(){
-    this.$store.dispatch('verifyToken',{auth_token:VueCookies.get('auth_token')});
+    process.env.NODE_ENV == 'production' ? this.$store.dispatch('verifyToken',{auth_token:VueCookies.get('auth_token')}):this.$store.dispatch('devInit');
   }
 }
 </script>

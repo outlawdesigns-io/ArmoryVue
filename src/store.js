@@ -60,6 +60,10 @@ const actions = {
       }
     });
   },
+  devInit({commit}){
+    this.dispatch('init');
+    router.push('home');
+  },
   getFirearms({commit}){
     FirearmRepository.setAuthToken(this.state.auth_token);
     FirearmRepository.get().then((response)=>{
