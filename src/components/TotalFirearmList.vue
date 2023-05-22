@@ -18,8 +18,8 @@ let firearmsByCaliber = computed(()=>{
     // results.push({Id:groups[keys[i]][0].Id,Caliber:caliber,Rounds:rounds});
     results.push({Caliber:caliber,Firearms:groups[i]});
   }
-  return groups;
-  //return results;
+  // return groups;
+  return results;
 });
 
 function _groupBy(objectArray,targetProperty){
@@ -41,7 +41,9 @@ console.log(firearmsByCaliber.value);
   <v-card>
     <v-card-title>Firearms</v-card-title>
     <v-card-text>
-      <!-- <v-list-group v-for="caliber in firearmsByCaliber" :key="caliber" :title="caliber"></v-list-group> -->
+      <v-list-group value="firearmsByCaliber">
+        <v-list-item v-bind="Firearms" title="Model"></v-list-item>
+      </v-list-group>
       <!-- <v-list lines="one">
         <v-list-item v-for="caliber in firearmsByCaliber" :key="a.Id" :title="a.Caliber" :subtitle="a.Rounds"></v-list-item>
       </v-list> -->

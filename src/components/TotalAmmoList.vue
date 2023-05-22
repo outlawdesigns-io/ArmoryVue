@@ -30,7 +30,7 @@ function _groupBy(objectArray,targetProperty){
   },{});
 }
 
-//console.log(ammo.value);
+// console.log(ammo.value);
 
 </script>
 
