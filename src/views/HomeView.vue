@@ -15,12 +15,12 @@ import TotalFirearmList from '../components/TotalFirearmList.vue';
         <TotalAmmoList></TotalAmmoList>
       </v-col>
       <v-col cols="12" sm="2">
-        <TotalFirearmList></TotalFirearmList>
+        <!-- <TotalFirearmList></TotalFirearmList> -->
       </v-col>
-      <v-col cols="12" sm="2"><p>Test</p></v-col>
-      <v-col cols="12" sm="2"><p>Test</p></v-col>
-      <v-col cols="12" sm="2"><p>Test</p></v-col>
-      <v-col cols="12" sm="2"><p>Test</p></v-col>
+      <v-col cols="12" sm="2"></v-col>
+      <v-col cols="12" sm="2"></v-col>
+      <v-col cols="12" sm="2"></v-col>
+      <v-col cols="12" sm="2"></v-col>
     </v-row>
   </v-container>
 </template>

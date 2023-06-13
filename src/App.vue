@@ -28,7 +28,8 @@ export default{
   <v-app id="inspire">
      <v-navigation-drawer v-model="drawer">
        <v-list density="compact" nav>
-         <v-list-item title="Shoots" value="ammo" to="/shoots"></v-list-item>
+         <v-list-item title="Home" value="home" to="/home"></v-list-item>
+         <v-list-item title="Shoots" value="shoots" to="/shoots"></v-list-item>
          <v-list-item title="Manufacturers" value="manufacturers" to="/manufacturers"></v-list-item>
          <v-list-item title="Vendors" value="vendors" to="/vendors"></v-list-item>
          <v-list-item title="Calibers" value="calibers" to="/calibers"></v-list-item>

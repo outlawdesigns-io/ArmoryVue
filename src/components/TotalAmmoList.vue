@@ -16,7 +16,16 @@ let ammo = computed(()=>{
     },0);
     results.push({Id:groups[keys[i]][0].Id,Caliber:caliber,Rounds:rounds});
   }
-  return results;
+  return results.sort((a,b)=>{
+    //sort by rounds asc
+    if(a.Rounds < b.Rounds){
+      return -1;
+    }
+    if(a.Rounds > b.Rounds){
+      return 1;
+    }
+    return 0;
+  });
 });
 
 function _groupBy(objectArray,targetProperty){

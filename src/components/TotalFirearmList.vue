@@ -18,8 +18,34 @@ let firearmsByCaliber = computed(()=>{
     // results.push({Id:groups[keys[i]][0].Id,Caliber:caliber,Rounds:rounds});
     results.push({Caliber:caliber,Firearms:groups[i]});
   }
+  console.log(results);
+  return [
+    {Caliber:{ Id:1, Label:'7.62x39' },Firearms:[
+      {
+        Id:2,
+        Manufacturer:6,
+        Caliber:1,
+        Model:'AK-47',
+        Serial_Number:'S0001BJZ'
+      },
+      {
+        Id:2,
+        Manufacturer:6,
+        Caliber:1,
+        Model:'AK-47',
+        Serial_Number:'X0002ZYN'
+      }
+    ]},
+    {Caliber:{ Id:2, Label:'.223 REM' },Firearms:[]},
+    {Caliber:{ Id:3, Label:'5.56x45 Nato' },Firearms:[]},
+    {Caliber:{ Id:4, Label:'9mm Luger' },Firearms:[]},
+    {Caliber:{ Id:5, Label:'9mm Nato' },Firearms:[]},
+    {Caliber:{ Id:6, Label:'.40 S&W' },Firearms:[]},
+    {Caliber:{ Id:7, Label:'20 Gauge' },Firearms:[]}
+  ];
   // return groups;
-  return results;
+  // return store.state.firearms;
+  //return results;
 });
 
 function _groupBy(objectArray,targetProperty){
@@ -33,7 +59,7 @@ function _groupBy(objectArray,targetProperty){
   },{});
 }
 
-console.log(firearmsByCaliber.value);
+//console.log(firearmsByCaliber.value);
 
 </script>
 
@@ -41,12 +67,13 @@ console.log(firearmsByCaliber.value);
   <v-card>
     <v-card-title>Firearms</v-card-title>
     <v-card-text>
-      <v-list-group value="firearmsByCaliber">
-        <v-list-item v-bind="Firearms" title="Model"></v-list-item>
-      </v-list-group>
-      <!-- <v-list lines="one">
-        <v-list-item v-for="caliber in firearmsByCaliber" :key="a.Id" :title="a.Caliber" :subtitle="a.Rounds"></v-list-item>
-      </v-list> -->
+      <v-list>
+        <v-list-group v-for="(Caliber,Firearms) in firearmsByCaliber">
+          <v-list-item v-for="f in Firearms" :key="f.Id" :title="f.Model" :subtitle="f.Serial_Number"></v-list-item>
+        </v-list-group>
+        <!-- <v-list-item v-for="(Caliber,Firearms) in firearmsByCaliber" :title="Caliber.Label" :value="Caliber.Label">{{Caliber}}</v-list-item> -->
+      </v-list>
+      <!-- <v-list lines="one"><v-list-item v-for="f in firearmsByCaliber" :key="f.Id" :title="f.Model" :subtitle="f.Serial_Number"></v-list-item></v-list> -->
     </v-card-text>
     <v-card-actions></v-card-actions>
   </v-card>

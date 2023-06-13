@@ -17,8 +17,8 @@ export default{
       return this.$store.state.shoots.map((e)=>{
         let ammoObj = ammo.filter((a)=>{ return a.Id == e.Ammo })[0];
         let firearmObj = firearms.filter((f)=>{ return f.Id == e.FireArm })[0];
-        //e.Display = firearmObj.Model + '|' + firearmObj.Serial_Number + '|' + e.Rounds;
-        e.Display = e.Id;
+        e.Display = firearmObj.Model + ' | ' + firearmObj.Serial_Number + ' | ' + e.Rounds + ' | ' + e.Created;
+        //e.Display = e.Id;
         return e;
       });
     },
