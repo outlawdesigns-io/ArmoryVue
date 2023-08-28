@@ -33,10 +33,11 @@ export default{
       const valid = await this.$refs.form.validate();
       if(!valid.valid) return;
       let promise;
+      let distanceFt = this.selectedDistance == 'Yards' ? (this.distance * 3):this.distance;
       if(!this.captureImages){
-        promise = this.$store.dispatch('addShoot',{FireArm:this.selectedFirearm.Id,Ammo:this.selectedAmmo.Id,Rounds:this.rounds});
+        promise = this.$store.dispatch('addShoot',{FireArm:this.selectedFirearm.Id,Ammo:this.selectedAmmo.Id,Rounds:this.rounds,Distance_Ft:distanceFt});
       }else{
-        promise = this.$store.dispatch('addShootWithImages',{FireArm:this.selectedFirearm.Id,Ammo:this.selectedAmmo.Id,Rounds:this.rounds});
+        promise = this.$store.dispatch('addShootWithImages',{FireArm:this.selectedFirearm.Id,Ammo:this.selectedAmmo.Id,Rounds:this.rounds,Distance_Ft:distanceFt});
       }
       try{
         await promise;
@@ -55,6 +56,7 @@ export default{
       }
       this.selectedFirearm = {Id:null,Display:''};
       this.rounds = null;
+      this.distance = null;
       this.selectedAmmo = {Id:null,Display:''};
       this.captureImages = null;
       this.targetImages = null;
@@ -67,6 +69,8 @@ export default{
       selectedFirearm:{Id:null,Display:''},
       selectedAmmo:{Id:null,Display:''},
       rounds:null,
+      distance:null,
+      selectedDistance:'Yards',
       captureImages:null,
       targetImages:[],
       roundRules:[
@@ -86,6 +90,12 @@ export default{
           if (value.Id !== null) return true;
           return 'Must select ammunition.'
         }
+      ],
+      distanceRules:[
+        value => {
+          if (value > 0) return true;
+          return 'Must provide a positive distance.'
+        }
       ]
     }
   }
@@ -101,6 +111,8 @@ export default{
           <v-select v-model="selectedFirearm" :rules="firearmRules" label="Firearm" :items="firearms" item-title="Display" item-value="Id" return-object></v-select>
           <v-select v-model="selectedAmmo" :rules="ammoRules" label="Ammo" :items="ammo" item-title="Display" item-value="Id" return-object></v-select>
           <v-text-field v-model="rounds" :rules="roundRules" label="Rounds" type="number"></v-text-field>
+          <v-text-field v-model="distance" :rules="distanceRules" label="Distance" type="number"></v-text-field>
+          <v-select v-model="selectedDistance" label="" :items="['Yards','Feet']"></v-select>
           <v-checkbox v-model="captureImages" label="Capture target image(s)"></v-checkbox>
           <div v-if="captureImages">
             <v-file-input v-model="targetImages" show-size counter multiple label="Select Image(s)"></v-file-input>

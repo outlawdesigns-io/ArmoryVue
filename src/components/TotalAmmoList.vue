@@ -28,6 +28,12 @@ let ammo = computed(()=>{
   });
 });
 
+let totalAmmo = computed(()=>{
+  return store.state.ammo.reduce((acc,e)=>{
+    return acc += parseInt(e.Rounds);
+  },0);
+});
+
 function _groupBy(objectArray,targetProperty){
   return objectArray.reduce((acc,obj)=>{
     const key = obj[targetProperty];
@@ -51,6 +57,6 @@ function _groupBy(objectArray,targetProperty){
         <v-list-item v-for="a in ammo" :key="a.Id" :title="a.Caliber" :subtitle="a.Rounds"></v-list-item>
       </v-list>
     </v-card-text>
-    <v-card-actions></v-card-actions>
+    <v-card-actions>Total Rounds: {{totalAmmo}}</v-card-actions>
   </v-card>
 </template>

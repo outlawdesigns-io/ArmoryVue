@@ -29,6 +29,7 @@ export default{
     formData.append('FireArm',payload.FireArm);
     formData.append('Ammo',payload.Ammo);
     formData.append('Rounds',payload.Rounds);
+    formData.append('Distance_Ft',payload.Distance_Ft);
     return Repository.post(`${resource}`,formData,{headers:{'Content-Type':'multipart/form-data'}});
   },
   addTargetImage(payload){
