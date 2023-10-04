@@ -43,12 +43,12 @@ export default{
         await promise;
         toast("Changes Saved!",{type:'success',autoClose:2000});
         if(this.captureImages){
-          let promises = [];
-          this.targetImages.forEach((e)=>{
-            promises.push(this.$store.dispatch('addTargetImage',e));
-          });
-          await Promise.all(promises);
-          toast("Images Saved!",{type:'success',autoClose:2000});
+          //no way to know when this is done and pop toast.
+          this.shrinkAndUploadImages();
+          // let promises = [];
+          // this.targetImages.forEach((e)=>{ console.log(e); promises.push(this.$store.dispatch('addTargetImage',e)); });
+          // await Promise.all(promises);
+          // toast("Images Saved!",{type:'success',autoClose:2000});
         }
       }catch(err){
         toast(err + "\nSee console for details.",{type:'error',autoClose:3000});
@@ -60,6 +60,56 @@ export default{
       this.selectedAmmo = {Id:null,Display:''};
       this.captureImages = null;
       this.targetImages = null;
+    },
+    shrinkAndUploadImages(){
+      let filesToUpload = this.targetImages;
+      let ctx;
+      for(let i = 0; i < filesToUpload.length; i++){
+        let file = filesToUpload[i];
+        let img = document.createElement("img");
+        let reader = new FileReader();
+        reader.onload = (e)=>{
+          img.src = e.target.result;
+          img.onload = ()=>{
+            let canvas = document.createElement("canvas");
+            let MAX_WIDTH = 800;
+            let MAX_HEIGHT = 600;
+            let width = img.width;
+            let height = img.height;
+            if(width > height){
+              if(width > MAX_WIDTH){
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            }else{
+              if(height > MAX_HEIGHT){
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            ctx = canvas.getContext('2d');
+            ctx.drawImage(img,0,0,width,height);
+            let dataurl = canvas.toDataURL("image/jpg",0.5);
+            let blob = this.dataURLtoBlob(dataurl);
+            this.$store.dispatch('addTargetImage',new File([blob],"tmpname"));
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    dataURLtoBlob(dataurl){
+      //console.log(dataurl);
+      let arr = dataurl.split(',');
+      let mime = arr[0].match(/:(.*?);/)[1];
+      let bstr = atob(arr[1]);
+      let n = bstr.length;
+      let u8arr = new Uint8Array(n);
+      while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr],{type:mime});
     }
   },
   mounted(){
