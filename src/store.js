@@ -16,6 +16,7 @@ const AuthRepository = RepositoryFactory.get('authorization');
 
 const state = {
   auth_token:null,
+  fetchingImages:false,
   firearms:[],
   ammo:[],
   manufacturers:[],
@@ -125,13 +126,16 @@ const actions = {
   getAmmoPurchases({commit}){
     return AmmoPurchaseRepository.get().then((response)=>{
       response.data.forEach((e)=>{
-        commit('addAmmoPurchase',e);
+        commit('pushAmmoPurchase',e);
       });
     });
   },
   getShootTargets({commit},payload){
+    commit('clearTargetImages');
+    commit('toggleFetchingImages');
     ShootRepository.setAuthToken(this.state.auth_token);
     return ShootRepository.getTargetImagesByShootId(payload).then((response)=>{
+      commit('toggleFetchingImages');
       response.data.forEach((e)=>{
         commit('addTargetImage',e);
       });
@@ -299,15 +303,26 @@ const mutations = {
   pushShoot(state,shoot){
     state.shoots.push(shoot);
   },
+  pushAmmoPurchase(state,ammoPurchase){
+    state.ammoPurchases.push(ammoPurchase);
+  },
   addTargetImage(state,image){
     state.targetImages.push(image);
+  },
+  clearTargetImages(state){
+    state.targetImages = [];
+  },
+  toggleFetchingImages(state){
+    state.fetchingImages = !state.fetchingImages;
   },
   setPendingShoot(state,shoot){
     state.pendingShoot = shoot;
   },
   addAmmoPurchase(state,purchase){
-    let ammoIndex = state.ammo.findIndex((e)=>{ return e.Id == purchase.Ammo});
-    state.ammo[ammoIndex].Rounds += parseInt(purchase.Rounds);
+    if(!isNaN(new Date(purchase.DateReceived).getTime())){
+      let ammoIndex = state.ammo.findIndex((e)=>{ return e.Id == purchase.Ammo});
+      state.ammo[ammoIndex].Rounds += parseInt(purchase.Rounds);
+    }
     state.ammoPurchases.push(purchase);
   },
   updateManufacturer(state,manufacturer){

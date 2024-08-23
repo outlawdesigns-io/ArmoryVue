@@ -4,6 +4,8 @@
 
 import TotalAmmoList from '../components/TotalAmmoList.vue';
 import TotalFirearmList from '../components/TotalFirearmList.vue';
+import TotalShootList from '../components/TotalShootList.vue';
+import PendingAmmoPurchaseList from '../components/PendingAmmoPurchaseList.vue';
 
 
 </script>
@@ -15,10 +17,14 @@ import TotalFirearmList from '../components/TotalFirearmList.vue';
         <TotalAmmoList></TotalAmmoList>
       </v-col>
       <v-col cols="12" sm="2">
-        <!-- <TotalFirearmList></TotalFirearmList> -->
+        <TotalFirearmList></TotalFirearmList>
       </v-col>
-      <v-col cols="12" sm="2"></v-col>
-      <v-col cols="12" sm="2"></v-col>
+      <v-col cols="12" sm="2">
+        <TotalShootList></TotalShootList>
+      </v-col>
+      <v-col cols="12" sm="2">
+        <PendingAmmoPurchaseList></PendingAmmoPurchaseList>
+      </v-col>
       <v-col cols="12" sm="2"></v-col>
       <v-col cols="12" sm="2"></v-col>
     </v-row>

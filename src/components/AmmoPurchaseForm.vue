@@ -29,7 +29,13 @@ export default{
   },
   methods:{
     async submit(event){
-      this.form.DateReceived = this.inPerson ? this.form.DatePurchased : null;
+      if(this.inPerson){
+        this.form.DateReceived = this.form.DatePurchased;
+      }else{
+        //server will update ammo totals if this property is present (checks for undefined vs nullness)
+        delete this.form.DateReceived;
+      }
+      //this.form.DateReceived = this.inPerson ? this.form.DatePurchased : null;
       const valid = await this.$refs.form.validate();
       if(!valid.valid) return;
       if(!this.editing){

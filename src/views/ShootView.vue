@@ -1,5 +1,6 @@
 <script>
 import ShootForm from '../components/ShootForm.vue';
+import ShootDetails from '../components/ShootDetails.vue';
 import { useStore } from 'vuex';
 
 import {computed} from 'vue';
@@ -7,23 +8,34 @@ import {computed} from 'vue';
 export default{
   name:'ShootView',
   components:{
-    ShootForm
+    ShootForm,
+    ShootDetails
   },
   props:{},
   computed:{
     shoots(){
       let ammo = this.$store.state.ammo;
       let firearms = this.$store.state.firearms;
+      let manufacturers = this.$store.state.manufacturers;
       return this.$store.state.shoots.map((e)=>{
         let ammoObj = ammo.filter((a)=>{ return a.Id == e.Ammo })[0];
         let firearmObj = firearms.filter((f)=>{ return f.Id == e.FireArm })[0];
-        e.Display = firearmObj.Model + ' | ' + firearmObj.Serial_Number + ' | ' + e.Rounds + ' | ' + e.Created;
+        let firearmManufacturerObj = manufacturers.filter((m)=>{ return m.Id == firearmObj.Manufacturer })[0];
+        e.Display = firearmManufacturerObj.Name + ' ' + firearmObj.Model + ' @' + e.Created;
+        //e.Display = firearmObj.Model + ' | ' + firearmObj.Serial_Number + ' | ' + e.Rounds + ' | ' + e.Created;
         //e.Display = e.Id;
         return e;
       });
     },
     targets(){
       return this.$store.state.targetImages.filter((e)=>{ return e.ShootId == this.selectedId}).map((e)=>{ e.imgStr = 'data:image/png;base64,' + this.bufferToBase64(e.BinaryData.data); return e });
+    },
+    hasTargets(){
+      //we need a way to know if we're currently fetching targets.
+      return this.$store.state.targetImages.length > 0;
+    },
+    fetchingImages(){
+      return this.$store.state.fetchingImages;
     }
   },
   methods:{
@@ -63,9 +75,13 @@ export default{
         <v-btn color="grey-lighten-1" icon="mdi-camera" variant="text" @click="setSelected(i.Id)"></v-btn>
     </template>
     <div v-if="i.Id == selectedId">
-      <v-carousel>
+      <ShootDetails :populateWith="i"></ShootDetails>
+      <v-carousel v-if="hasTargets && !fetchingImages">
         <v-carousel-item v-for="j in targets" :src="j.imgStr"></v-carousel-item>
       </v-carousel>
+      <div id="loading" v-if="fetchingImages">
+        <span>Fetching Targets...</span>
+      </div>
     </div>
     </v-list-item>
   </v-list>
@@ -74,5 +90,9 @@ export default{
 <style scoped>
 .selected{
   color:red;
+}
+#loading{
+  /* margin:auto; */
+  text-align: center;;
 }
 </style>
