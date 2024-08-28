@@ -1,12 +1,13 @@
 <script setup>
 import { useStore } from 'vuex';
 import { ref,computed } from 'vue';
+import CommonMethods from '../CommonMethods';
 
 const store = useStore();
 let firearmsByCaliber = computed(()=>{
   let results = [];
   let calibers = store.state.calibers;
-  let groups = _groupBy(store.state.firearms,"Caliber");
+  let groups = CommonMethods.groupBy(store.state.firearms,"Caliber");
   let keys = Object.keys(groups);
   for(let i in groups){
     let caliber = calibers.filter((e)=>{ return e.Id == i})[0];
@@ -14,7 +15,6 @@ let firearmsByCaliber = computed(()=>{
     firearms.forEach((f)=>{
       f.RoundsShot = store.state.shoots.reduce((acc,e)=>{
         if(e.FireArm == f.Id){
-          // console.log(acc);
           acc += parseInt(e.Rounds);
         }
         return acc;
@@ -28,17 +28,6 @@ let firearmsByCaliber = computed(()=>{
 let totalFirearms = computed(()=>{
   return store.state.firearms.length;
 });
-
-function _groupBy(objectArray,targetProperty){
-  return objectArray.reduce((acc,obj)=>{
-    const key = obj[targetProperty];
-    if(!acc[key]){
-      acc[key] = [];
-    }
-    acc[key].push(obj);
-    return acc;
-  },{});
-}
 
 </script>
 

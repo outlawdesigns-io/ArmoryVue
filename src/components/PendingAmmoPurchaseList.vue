@@ -1,24 +1,19 @@
 <script setup>
 import { useStore } from 'vuex';
 import { ref,computed } from 'vue';
+import CommonMethods from '../CommonMethods';
 
 const store = useStore();
 
 let ammoPurchases = computed(()=>{
-  let purchases = store.state.ammoPurchases.filter(_isNotReceived).map(_mapAdditionalProperties);
+  let purchases = store.state.ammoPurchases.filter(CommonMethods.isNotReceived).map(_mapAdditionalProperties);
   return purchases
 });
 
 let totalAmmo = computed(()=>{
-  return store.state.ammoPurchases.filter(_isNotReceived).reduce((acc,e)=>{
-    return acc += parseInt(e.Rounds);
-  },0);
+  return store.state.ammoPurchases.filter(CommonMethods.isNotReceived).reduce(CommonMethods.sumRounds,0);
 });
 
-function _isNotReceived(e){
-  let date = new Date(e.DateReceived);
-  return isNaN(date.getTime());
-}
 function _mapAdditionalProperties(e){
   let manufacturers = store.state.manufacturers;
   let calibers = store.state.calibers;

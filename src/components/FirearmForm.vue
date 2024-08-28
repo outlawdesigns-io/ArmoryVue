@@ -14,32 +14,33 @@ export default{
   },
   computed:{
     manufacturers(){
-      return this.$store.state.manufacturers;
+      return this.$store.state.manufacturers.filter((e)=>{ return e.Firearm });
     },
     calibers(){
       return this.$store.state.calibers;
-    }
+    },
+    optics(){
+      return this.$store.state.optics;
+    },
   },
   methods:{
     async submit(event){
       const valid = await this.$refs.form.validate();
-      if(!valid.valid) return;
-      let promise;
-      if(!this.editing){
-        promise = this.$store.dispatch('addFirearm',this.form);
-      }else{
-        promise = this.$store.dispatch('updateFirearm',this.form);
+      if(!valid.valid){
+        return;
       }
       try{
-        await promise;
+        if(!this.editing){
+          await this.$store.dispatch('addFirearm',this.form);
+          Object.keys(this.form).forEach((k)=>{this.form[k] = null});
+        }else{
+          await this.$store.dispatch('updateFirearm',this.form);
+          //this.editing = false;
+        }
         toast("Changes Saved!",{type:'success',autoClose:2000});
       }catch(err){
         toast(err + "\nSee console for details.",{type:'error',autoClose:3000});
-        return;
       }
-      this.editId = null;
-      this.editing = false;
-      Object.keys(this.form).forEach((k)=>{this.form[k] = null});
     },
     async deleteItem(Id){
       try{
@@ -55,7 +56,6 @@ export default{
   created(){
     if(!this.populateWith.empty){
       this.form = this.populateWith;
-      this.editId = this.populateWith.Id;
       this.editing = true;
     }
   },
@@ -67,6 +67,8 @@ export default{
         Caliber:null,
         Model:null,
         Serial_Number:null,
+        CurrentOptic:null,
+        LinkToProduct:null
       },
       manufacturerRules:[
         value => {
@@ -102,6 +104,7 @@ export default{
         <v-select v-model="form.Caliber" :rules="caliberRules" label="Caliber" :items="calibers" item-title="Label" item-value="Id"></v-select>
         <v-text-field v-model="form.Model" :rules="modelRules" label="Model"></v-text-field>
         <v-text-field v-model="form.Serial_Number" label="Serial Number"></v-text-field>
+        <v-select v-model="form.CurrentOptic" label="Current Optic" :items="optics" item-title="Name" item-value="Id"></v-select>
       </v-card-text>
       <v-card-actions>
         <v-btn type="submit">Submit</v-btn>

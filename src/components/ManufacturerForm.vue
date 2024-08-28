@@ -16,23 +16,21 @@ export default{
   methods:{
     async submit(event){
       const valid = await this.$refs.form.validate();
-      if(!valid.valid) return;
-      let promise;
-      if(!this.editing){
-        promise = this.$store.dispatch('addManufacturer',this.form);
-      }else{
-        promise = this.$store.dispatch('updateManufacturer',this.form);;
+      if(!valid.valid){
+        return;
       }
       try{
-        await promise;
+        if(!this.editing){
+          await this.$store.dispatch('addManufacturer',this.form);
+          Object.keys(this.form).forEach((k)=>{this.form[k] = null});
+        }else{
+          await this.$store.dispatch('updateManufacturer',this.form);
+          //this.editing = false;
+        }
         toast("Changes Saved!",{type:'success',autoClose:2000});
       }catch(err){
         toast(err + "\nSee console for details.",{type:'error',autoClose:3000});
-        return;
       }
-      this.editId = null;
-      this.editing = false;
-      Object.keys(this.form).forEach((k)=>{this.form[k] = null});
     },
     async deleteItem(Id){
       try{
@@ -48,7 +46,7 @@ export default{
   created(){
     if(!this.populateWith.empty){
       this.form = this.populateWith;
-      this.editId = this.populateWith.Id;
+      console.log(this.form);
       this.editing = true;
     }
   },
@@ -57,7 +55,10 @@ export default{
       editing:false,
       form:{
         Name:null,
-        Website:null
+        Website:null,
+        Firearm:0,
+        Ammo:0,
+        Optic:0
       },
       nameRules:[
         value => {
@@ -79,6 +80,9 @@ export default{
       <v-card-text>
           <v-text-field v-model="form.Name" :rules="nameRules" label="Name"></v-text-field>
           <v-text-field v-model="form.Website" label="Website"></v-text-field>
+          <v-checkbox v-model="form.Firearm" label="Firearms" v-bind:true-value="1" v-bind:false-value="0"></v-checkbox>
+          <v-checkbox v-model="form.Ammo" label="Ammo" v-bind:true-value="1" v-bind:false-value="0"></v-checkbox>
+          <v-checkbox v-model="form.Optic" label="Optics" v-bind:true-value="1" v-bind:false-value="0"></v-checkbox>
       </v-card-text>
       <v-card-actions>
         <v-btn type="submit">Save</v-btn>

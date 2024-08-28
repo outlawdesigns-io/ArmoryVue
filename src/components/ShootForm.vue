@@ -35,9 +35,9 @@ export default{
       let promise;
       let distanceFt = this.selectedDistance == 'Yards' ? (this.distance * 3):this.distance;
       if(!this.captureImages){
-        promise = this.$store.dispatch('addShoot',{FireArm:this.selectedFirearm.Id,Ammo:this.selectedAmmo.Id,Rounds:this.rounds,Distance_Ft:distanceFt});
+        promise = this.$store.dispatch('addShoot',{FireArm:this.selectedFirearm.Id,Ammo:this.selectedAmmo.Id,Rounds:this.rounds,Distance_Ft:distanceFt,Optic:this.selectedFirearm.CurrentOptic});
       }else{
-        promise = this.$store.dispatch('addShootWithImages',{FireArm:this.selectedFirearm.Id,Ammo:this.selectedAmmo.Id,Rounds:this.rounds,Distance_Ft:distanceFt});
+        promise = this.$store.dispatch('addShootWithImages',{FireArm:this.selectedFirearm.Id,Ammo:this.selectedAmmo.Id,Rounds:this.rounds,Distance_Ft:distanceFt,Optic:this.selectedFirearm.CurrentOptic});
       }
       try{
         await promise;

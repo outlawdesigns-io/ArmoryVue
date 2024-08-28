@@ -6,6 +6,7 @@ import FirearmRepository from './FirearmRepository';
 import ManufacturerRepository from './ManufacturerRepository';
 import ShootRepository from './ShootRepository';
 import VendorRepository from './VendorRepository';
+import OpticRepository from './OpticRepository';
 
 const repositories = {
   ammoPurchase:AmmoPurchaseRepository,
@@ -15,7 +16,8 @@ const repositories = {
   firearm:FirearmRepository,
   manufacturer:ManufacturerRepository,
   shoot:ShootRepository,
-  vendor:VendorRepository
+  vendor:VendorRepository,
+  optic:OpticRepository
 };
 
 export const RepositoryFactory = {

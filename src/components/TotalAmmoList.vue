@@ -1,51 +1,27 @@
 <script setup>
 import { useStore } from 'vuex';
 import { ref,computed } from 'vue';
+import CommonMethods from '../CommonMethods';
 
 const store = useStore();
 let ammo = computed(()=>{
   let results = [];
   let calibers = store.state.calibers;
-  let groups = _groupBy(store.state.ammo,"Caliber");
+  let groups = CommonMethods.groupBy(store.state.ammo,"Caliber");
   let keys = Object.keys(groups);
   for(let i in keys){
     let caliberId = groups[keys[i]][0].Caliber;
     let caliber = calibers.filter((e)=>{ return e.Id == caliberId})[0].Label;
-    let rounds = groups[keys[i]].reduce((acc,e)=>{
-      return acc += parseInt(e.Rounds);
-    },0);
+    let rounds = groups[keys[i]].reduce(CommonMethods.sumRounds,0);
     results.push({Id:groups[keys[i]][0].Id,Caliber:caliber,Rounds:rounds});
   }
-  return results.sort((a,b)=>{
-    //sort by rounds asc
-    if(a.Rounds < b.Rounds){
-      return -1;
-    }
-    if(a.Rounds > b.Rounds){
-      return 1;
-    }
-    return 0;
-  });
+  return results.sort(CommonMethods.sortByRoundsAsc);
 });
 
 let totalAmmo = computed(()=>{
-  return store.state.ammo.reduce((acc,e)=>{
-    return acc += parseInt(e.Rounds);
-  },0);
+  return store.state.ammo.reduce(CommonMethods.sumRounds,0);
 });
 
-function _groupBy(objectArray,targetProperty){
-  return objectArray.reduce((acc,obj)=>{
-    const key = obj[targetProperty];
-    if(!acc[key]){
-      acc[key] = [];
-    }
-    acc[key].push(obj);
-    return acc;
-  },{});
-}
-
-// console.log(ammo.value);
 
 </script>
 

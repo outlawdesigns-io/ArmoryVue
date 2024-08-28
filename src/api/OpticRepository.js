@@ -2,8 +2,7 @@ import Repository from './Repository';
 
 const baseDomain = process.env.NODE_ENV == 'production' ? 'https://api.outlawdesigns.io:8420':'http://localhost:9912';
 const baseUrl = `${baseDomain}`;
-const resource = '/shoot';
-const target = '/target';
+const resource = '/optic';
 
 export default{
   setDomain(){
@@ -26,22 +25,17 @@ export default{
   add(payload){
     this.setDomain();
     let formData = new FormData();
-    formData.append('FireArm',payload.FireArm);
-    formData.append('Ammo',payload.Ammo);
-    formData.append('Rounds',payload.Rounds);
-    formData.append('Distance_Ft',payload.Distance_Ft);
-    formData.append('Optic',payload.Optic);
+    Object.keys(payload).forEach((k)=>{ formData.append(k,payload[k]) });
     return Repository.post(`${resource}`,formData,{headers:{'Content-Type':'multipart/form-data'}});
   },
-  addTargetImage(payload){
+  update(payload){
     this.setDomain();
     let formData = new FormData();
-    formData.append('File',payload.File);
-    formData.append('ShootId',payload.ShootId);
-    return Repository.post(`${resource}/${payload.ShootId}/target`,formData,{headers:{'Content-Type':'multipart/form-data'}});
+    Object.keys(payload).forEach((k)=>{ formData.append(k,payload[k]) });
+    return Repository.put(`${resource}/${payload.Id}`,formData,{headers:{'Content-Type':'multipart/form-data'}});
   },
-  getTargetImagesByShootId(payload){
+  delete(payload){
     this.setDomain();
-    return Repository.get(`${resource}/${payload}/target`);
+    return Repository.delete(`${resource}/${payload}`);
   }
 }

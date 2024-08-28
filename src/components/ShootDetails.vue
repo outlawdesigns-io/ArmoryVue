@@ -7,7 +7,9 @@ const store = useStore();
 const props = defineProps({populateWith:{
       type:Object,
       default: ()=>({empty:true})
-    }});
+    }
+  }
+);
 
 let shootDetails = computed(()=>{
   return {
@@ -26,7 +28,8 @@ let shootDetails = computed(()=>{
     }).map((e)=>{
       e.ManufacturerObj = store.state.manufacturers.filter((m)=>{ return m.Id == e.Manufacturer; })[0];
       return e;
-    })[0]
+    })[0],
+    optic: props.populateWith.Optic ? store.state.optics.filter((o)=>{ return o.Id == props.populateWith.Optic })[0]:null
   }
 });
 
@@ -45,6 +48,17 @@ let shootDetails = computed(()=>{
           <td>{{shootDetails.rounds}}</td>
           <td>Distance (ft.): </td>
           <td>{{shootDetails.range}}</td>
+        </tr>
+        <tr v-if="shootDetails.optic">
+          <td colspan="4" class="tableHeader">Optic</td>
+        </tr>
+        <tr v-if="shootDetails.optic">
+          <td>Name:</td>
+          <td>
+            <a v-bind:href="shootDetails.optic.LinkToProduct" target="_blank">{{shootDetails.optic.Name}}</a>
+          </td>
+          <td>Magnification:</td>
+          <td>{{shootDetails.optic.MagnificationTimes}}x</td>
         </tr>
         <tr>
           <td colspan="4" class="tableHeader">{{shootDetails.ammo.ManufacturerObj.Name}}</td>

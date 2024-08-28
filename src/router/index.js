@@ -52,6 +52,11 @@ const router = createRouter({
       path: '/shoots',
       name: 'shoots',
       component: () => import('../views/ShootView.vue')
+    },
+    {
+      path:'/optics',
+      name:'optics',
+      component: () => import('../views/OpticsView.vue')
     }
   ]
 })

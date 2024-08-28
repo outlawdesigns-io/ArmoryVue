@@ -31,7 +31,7 @@ export default{
 <template>
   <v-btn @click="toggleNewForm">New</v-btn>
   <div v-if="newRecord">
-    <b>New Vendor:</b>
+    <b>New Manufacturer:</b>
     <ManufacturerForm></ManufacturerForm>
   </div>
   <br>

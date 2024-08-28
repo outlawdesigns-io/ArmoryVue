@@ -17,23 +17,21 @@ export default{
   methods:{
     async submit(event){
       const valid = await this.$refs.form.validate();
-      if(!valid.valid) return;
-      let promise;
-      if(!this.editing){
-        promise = this.$store.dispatch('addVendor',this.form);
-      }else{
-        promise = this.$store.dispatch('updateVendor',this.form);;
+      if(!valid.valid){
+        return;
       }
       try{
-        await promise;
+        if(!this.editing){
+          await this.$store.dispatch('addVendor',this.form);
+          Object.keys(this.form).forEach((k)=>{this.form[k] = null});
+        }else{
+          await this.$store.dispatch('updateVendor',this.form);
+          this.editing = false;
+        }
         toast("Changes Saved!",{type:'success',autoClose:2000});
       }catch(err){
         toast(err + "\nSee console for details.",{type:'error',autoClose:3000});
-        return;
       }
-      this.editId = null;
-      this.editing = false;
-      Object.keys(this.form).forEach((k)=>{this.form[k] = null});
     },
     async deleteItem(Id){
       try{
@@ -49,7 +47,6 @@ export default{
   created(){
     if(!this.populateWith.empty){
       this.form = this.populateWith;
-      this.editId = this.populateWith.Id;
       this.editing = true;
     }
   },

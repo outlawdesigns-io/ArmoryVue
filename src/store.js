@@ -9,6 +9,7 @@ const ShootRepository = RepositoryFactory.get('shoot');
 const CaliberRepository = RepositoryFactory.get('caliber');
 const VendorRepository = RepositoryFactory.get('vendor');
 const AmmoPurchaseRepository = RepositoryFactory.get('ammoPurchase');
+const OpticRepository = RepositoryFactory.get('optic');
 const AuthRepository = RepositoryFactory.get('authorization');
 
 //import VueCookies from 'vue-cookies'
@@ -25,6 +26,7 @@ const state = {
   vendors:[],
   ammoPurchases:[],
   targetImages:[],
+  optics:[],
   pendingShoot:{}
 }
 const actions = {
@@ -36,6 +38,7 @@ const actions = {
     this.dispatch('getVendors');
     this.dispatch('getShoots');
     this.dispatch('getAmmoPurchases');
+    this.dispatch('getOptics');
   },
   authenticate({commit},payload){
     AuthRepository.authenticate(payload.username,payload.password).then((response)=>{
@@ -141,6 +144,14 @@ const actions = {
       });
     });
   },
+  getOptics({commit}){
+    OpticRepository.setAuthToken(this.state.auth_token);
+    return OpticRepository.get().then((response)=>{
+      response.data.forEach((e)=>{
+        commit('addOptic',e);
+      });
+    });
+  },
   addShoot({commit},payload){
     ShootRepository.setAuthToken(this.state.auth_token);
     return ShootRepository.add(payload).then((response)=>{
@@ -196,6 +207,12 @@ const actions = {
       commit('addAmmoPurchase',response.data);
     });
   },
+  addOptic({commit},payload){
+    OpticRepository.setAuthToken(this.state.auth_token);
+    return OpticRepository.add(payload).then((response)=>{
+      commit('addOptic',response.data);
+    });
+  },
   updateManufacturer({commit},payload){
     ManufacturerRepository.setAuthToken(this.state.auth_token);
     return ManufacturerRepository.update(payload).then((response)=>{
@@ -230,6 +247,12 @@ const actions = {
     AmmoPurchaseRepository.setAuthToken(this.state.auth_token);
     return AmmoPurchaseRepository.update(payload).then((response)=>{
       commit('updateAmmoPurchase',payload);
+    });
+  },
+  updateOptic({commit},payload){
+    OpticRepository.setAuthToken(this.state.auth_token);
+    return OpticRepository.update(payload).then((response)=>{
+      commit('updateOptic',payload);
     });
   },
   receiveAmmoPurchase({commit},payload){
@@ -272,6 +295,12 @@ const actions = {
     FirearmRepository.setAuthToken(this.state.auth_token);
     return FirearmRepository.delete(payload).then((response)=>{
       commit('deleteFirearm',payload);
+    });
+  },
+  deleteOptic({commit},payload){
+    OpticRepository.setAuthToken(this.state.auth_token);
+    return OpticRepository.delete(payload).then((response)=>{
+      commit('deleteOptic',payload);
     });
   }
 }
@@ -325,6 +354,9 @@ const mutations = {
     }
     state.ammoPurchases.push(purchase);
   },
+  addOptic(state,optic){
+    state.optics.push(optic);
+  },
   updateManufacturer(state,manufacturer){
     let targetIndex = state.manufacturers.findIndex((e)=>{ return e.Id == manufacturer.Id});
     state.manufacturers[targetIndex] = manufacturer;
@@ -350,6 +382,10 @@ const mutations = {
     state.ammo[ammoIndex].Rounds += parseInt(purchase.Rounds);
     let targetIndex = state.ammo.findIndex((e)=>{ return e.Id == purchase.Id });
   },
+  updateOptic(state,optic){
+    let opticIndex = state.optics.findIndex((e)=>{ return e.Id == optic.Id });
+    state.optics[opticIndex] = optic;
+  },
   deleteVendor(state,id){
     state.vendors.splice(state.vendors.findIndex((e)=>{ return e.Id == id}),1);
   },
@@ -367,6 +403,9 @@ const mutations = {
   },
   deleteFirearm(state,id){
     state.firearms.splice(state.firearms.findIndex((e)=>{ return e.Id == id}),1);
+  },
+  deleteOptic(state,id){
+    state.optics.splice(state.optics.findIndex((e)=>{ return e.Id == id}),1);
   }
 }
 

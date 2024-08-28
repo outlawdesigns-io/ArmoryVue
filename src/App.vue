@@ -35,6 +35,7 @@ export default{
          <v-list-item title="Calibers" value="calibers" to="/calibers"></v-list-item>
          <v-list-item title="Firearms" value="firearms" to="/firearms"></v-list-item>
          <v-list-item title="Ammo" value="ammo" to="/ammo"></v-list-item>
+         <v-list-item title="Optics" value="optics" to="/optics"></v-list-item>
        </v-list>
      </v-navigation-drawer>
 
