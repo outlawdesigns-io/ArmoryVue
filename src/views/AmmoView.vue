@@ -111,6 +111,9 @@ export default{
         <template v-slot:append>
           <v-btn color="grey-lighten-1" icon="mdi-pencil" variant="text" @click="setEdit(a.Id)"></v-btn>
       </template>
+      <div v-if="a.Id == editId">
+        <AmmoForm :populateWith="a"></AmmoForm>
+      </div>
       </v-list-item>
     </v-list-group>
   </v-list>
