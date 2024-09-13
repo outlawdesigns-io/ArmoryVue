@@ -49,6 +49,8 @@ const actions = {
       }else{
         throw new Error(`API ${response.data['error']}`);
       }
+    }).catch((err)=>{
+      throw new Error(`API ${err}`);
     });
   },
   verifyToken({commit},payload){

@@ -1,6 +1,7 @@
 import Repository from './Repository';
+import AppConfig from '../AppConfig';
 
-const baseDomain = process.env.NODE_ENV == 'production' ? 'https://api.outlawdesigns.io:8420':'http://localhost:9912';
+const baseDomain = `${AppConfig[process.env.NODE_ENV].ARMORY_SERVICE_BASE}:${AppConfig[process.env.NODE_ENV].ARMORY_SERVICE_PORT}`;
 const baseUrl = `${baseDomain}`;
 const resource = '/shoot';
 const target = '/target';
