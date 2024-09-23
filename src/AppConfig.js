@@ -1,14 +1,14 @@
 export default{
   development:{
-    ARMORY_SERVICE_BASE:'localhost',
+    ARMORY_SERVICE_BASE:'http://localhost',
     ARMORY_SERVICE_PORT:9912,
-    AUTH_SERVICE_BASE:'localhost',
+    AUTH_SERVICE_BASE:'http://localhost',
     AUTH_SERVICE_PORT:9661
   },
   testing:{
-    ARMORY_SERVICE_BASE:'localhost',
+    ARMORY_SERVICE_BASE:'http://localhost',
     ARMORY_SERVICE_PORT:9912,
-    AUTH_SERVICE_BASE:'localhost',
+    AUTH_SERVICE_BASE:'http://localhost',
     AUTH_SERVICE_PORT:9661
   },
   production:{
