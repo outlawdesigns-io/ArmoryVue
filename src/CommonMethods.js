@@ -34,6 +34,7 @@ export default{
   },
   isNotReceived(e){
     let date = new Date(e.DateReceived);
-    return isNaN(date.getTime());
+    let time = date.getTime();
+    return isNaN(time) || time == 0;
   }
 }
