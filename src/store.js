@@ -25,7 +25,7 @@ const state = {
   shoots:[],
   vendors:[],
   ammoPurchases:[],
-  targetImages:[],
+  images:[],
   optics:[],
   pendingShoot:{}
 }
@@ -136,13 +136,13 @@ const actions = {
     });
   },
   getShootTargets({commit},payload){
-    commit('clearTargetImages');
+    commit('clearImages');
     commit('toggleFetchingImages');
     ShootRepository.setAuthToken(this.state.auth_token);
     return ShootRepository.getTargetImagesByShootId(payload).then((response)=>{
       commit('toggleFetchingImages');
       response.data.forEach((e)=>{
-        commit('addTargetImage',e);
+        commit('addImage',e);
       });
     });
   },
@@ -151,6 +151,17 @@ const actions = {
     return OpticRepository.get().then((response)=>{
       response.data.forEach((e)=>{
         commit('addOptic',e);
+      });
+    });
+  },
+  getFirearmImages({commit}, payload){
+    commit('clearImages');
+    commit('toggleFetchingImages');
+    FirearmRepository.setAuthToken(this.state.auth_token);
+    return FirearmRepository.getImages(payload).then((response)=>{
+      commit('toggleFetchingImages');
+      response.data.forEach((e)=>{
+        commit('addImage', e);
       });
     });
   },
@@ -170,8 +181,14 @@ const actions = {
   addTargetImage({commit},payload){
     ShootRepository.setAuthToken(this.state.auth_token);
     return ShootRepository.addTargetImage({ShootId:this.state.pendingShoot.Id,File:payload}).then((response)=>{
-      commit('addTargetImage',response.data);
+      commit('addImage',response.data);
     });
+  },
+  addFirearmImage({commit},payload){
+    FirearmRepository.setAuthToken(this.state.auth_token);
+    return FirearmRepository.addImage(payload).then((response)=>{
+      commit('addImage',response.data);
+    })
   },
   addManufacturer({commit},payload){
     ManufacturerRepository.setAuthToken(this.state.auth_token);
@@ -337,11 +354,11 @@ const mutations = {
   pushAmmoPurchase(state,ammoPurchase){
     state.ammoPurchases.push(ammoPurchase);
   },
-  addTargetImage(state,image){
-    state.targetImages.push(image);
+  addImage(state,image){
+    state.images.push(image);
   },
-  clearTargetImages(state){
-    state.targetImages = [];
+  clearImages(state){
+    state.images = [];
   },
   toggleFetchingImages(state){
     state.fetchingImages = !state.fetchingImages;

@@ -4,6 +4,8 @@ import { useStore } from 'vuex';
 
 import {computed} from 'vue';
 
+import CommonMethods from '../CommonMethods';
+
 export default{
   name:'FirearmView',
   components:{
@@ -13,11 +15,21 @@ export default{
   computed:{
     firearms(){
       return this.$store.state.firearms.map((f)=>{ f.Display = f.Model + " | " + f.Serial_Number; return f});
+    },
+    images(){
+      return this.$store.state.images.filter((e)=>{ return e.Firearm == this.editId}).map((e)=>{ e.imgStr = 'data:image/png;base64,' + CommonMethods.bufferToBase64(e.BinaryData.data); return e });
+    },
+    hasImages(){
+      return this.$store.state.images.length > 0;
+    },
+    fetchingImages(){
+      return this.$store.state.fetchingImages;
     }
   },
   methods:{
     setEdit(id){
       this.editId = this.editId == id ? null:id;
+      this.$store.dispatch('getFirearmImages',this.editId);
     },
     toggleNewForm(){
       this.newRecord = !this.newRecord;
@@ -49,6 +61,12 @@ export default{
     </template>
     <div v-if="i.Id == editId">
       <FirearmForm :populateWith="i"></FirearmForm>
+      <v-carousel v-if="hasImages && !fetchingImages">
+        <v-carousel-item v-for="j in images" :src="j.imgStr"></v-carousel-item>
+      </v-carousel>
+      <div id="loading" v-if="fetchingImages">
+        <span>Fetching Images...</span>
+      </div>
     </div>
     </v-list-item>
   </v-list>

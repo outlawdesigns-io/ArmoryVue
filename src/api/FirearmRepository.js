@@ -38,5 +38,17 @@ export default{
   delete(payload){
     this.setDomain();
     return Repository.delete(`${resource}/${payload}`);
+  },
+  addImage(payload){
+    this.setDomain();
+    let formData = new FormData();
+    formData.append('File',payload.File);
+    formData.append('Firearm',payload.Firearm);
+    formData.append('Optic',payload.Optic);
+    return Repository.post(`${resource}/${payload.Firearm}/image`,formData,{headers:{'Content-Type':'multipart/form-data'}});
+  },
+  getImages(payload){
+    this.setDomain();
+    return Repository.get(`${resource}/${payload}/image`);
   }
 }

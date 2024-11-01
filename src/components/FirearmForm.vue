@@ -2,10 +2,14 @@
 
 import {toast} from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
+import FirearmImageForm from './FirearmImageForm.vue';
+import CommonMethods from '../CommonMethods';
 
 export default{
   name:'FirearmForm',
-  components:[],
+  components:{
+    FirearmImageForm
+  },
   props:{
     populateWith:{
       type:Object,
@@ -50,25 +54,32 @@ export default{
         toast(err + "\nSee console for details.",{type:'error',autoClose:3000});
         return;
       }
+    },
+    toggleAddImages(){
+      this.addImages = !this.addImages
     }
   },
   mounted(){},
   created(){
     if(!this.populateWith.empty){
       this.form = this.populateWith;
+      this.form.PurchaseDate = this.form.PurchaseDate ? CommonMethods.trimDateTimeForInput(this.form.PurchaseDate):null;
       this.editing = true;
+      this.addImages = false;
     }
   },
   data(){
     return {
       editing:false,
+      addImages:false,
       form:{
         Manufacturer:null,
         Caliber:null,
         Model:null,
         Serial_Number:null,
         CurrentOptic:null,
-        LinkToProduct:null
+        LinkToProduct:null,
+        PurchaseDate:null
       },
       manufacturerRules:[
         value => {
@@ -87,7 +98,7 @@ export default{
           if(value) return true;
           return "Model is required"
         }
-      ],
+      ]
     }
   }
 
@@ -104,11 +115,17 @@ export default{
         <v-select v-model="form.Caliber" :rules="caliberRules" label="Caliber" :items="calibers" item-title="Label" item-value="Id"></v-select>
         <v-text-field v-model="form.Model" :rules="modelRules" label="Model"></v-text-field>
         <v-text-field v-model="form.Serial_Number" label="Serial Number"></v-text-field>
+        <v-text-field v-model="form.LinkToProduct" label="Link to Product"></v-text-field>
         <v-select v-model="form.CurrentOptic" label="Current Optic" :items="optics" item-title="Name" item-value="Id"></v-select>
+        <v-text-field v-model="form.PurchaseDate" label="Date Purchased" type="date"></v-text-field>
+        <div v-if="addImages && editing">
+          <FirearmImageForm :populateWith="{FirearmId:form.Id}"></FirearmImageForm>
+        </div>
       </v-card-text>
       <v-card-actions>
         <v-btn type="submit">Submit</v-btn>
         <v-btn v-if="editing" @click="deleteItem(form.Id)">Delete</v-btn>
+        <v-btn v-if="editing" @click="toggleAddImages()">Upload Images</v-btn>
         <!-- <v-btn>Cancel</v-btn> -->
       </v-card-actions>
     </v-card>

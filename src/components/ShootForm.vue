@@ -4,6 +4,7 @@ import {toast} from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
 import TargetImageForm from './TargetImageForm.vue';
+import CommonMethods from '../CommonMethods';
 
 export default{
   name:'ShootForm',
@@ -92,24 +93,12 @@ export default{
             ctx = canvas.getContext('2d');
             ctx.drawImage(img,0,0,width,height);
             let dataurl = canvas.toDataURL("image/jpg",0.5);
-            let blob = this.dataURLtoBlob(dataurl);
+            let blob = CommonMethods.dataURLToBlob(dataurl);
             this.$store.dispatch('addTargetImage',new File([blob],"tmpname"));
           }
         };
         reader.readAsDataURL(file);
       }
-    },
-    dataURLtoBlob(dataurl){
-      //console.log(dataurl);
-      let arr = dataurl.split(',');
-      let mime = arr[0].match(/:(.*?);/)[1];
-      let bstr = atob(arr[1]);
-      let n = bstr.length;
-      let u8arr = new Uint8Array(n);
-      while(n--){
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new Blob([u8arr],{type:mime});
     }
   },
   mounted(){
