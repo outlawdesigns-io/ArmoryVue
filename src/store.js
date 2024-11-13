@@ -321,6 +321,12 @@ const actions = {
     return OpticRepository.delete(payload).then((response)=>{
       commit('deleteOptic',payload);
     });
+  },
+  deleteFirearmImage({commit},payload){
+    FirearmRepository.setAuthToken(this.state.auth_token);
+    return FirearmRepository.deleteImage(payload).then((response)=>{
+      commit('deleteImage',payload);
+    });
   }
 }
 const mutations = {
@@ -425,6 +431,9 @@ const mutations = {
   },
   deleteOptic(state,id){
     state.optics.splice(state.optics.findIndex((e)=>{ return e.Id == id}),1);
+  },
+  deleteImage(state,id){
+    state.images.splice(state.images.findIndex((e)=>{ return e.Id == id}),1);
   }
 }
 

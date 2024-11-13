@@ -46,6 +46,10 @@ const submit = async () => {
         let payload = {Firearm:form.value.FirearmId,Optic:form.value.useCurrentOptic ? currentOptic.value:form.value.featuredOptic,File:fileToUpload};
         await store.dispatch('addFirearmImage',payload);
         toast("Changes Saved!",{type:'success',autoClose:2000});
+        form.value.compress = true;
+        form.value.useCurrentOptic = true;
+        form.value.featuredOptic = null;
+        form.value.images = [];
       }
     }catch(err){
       toast(err + "\nSee console for details.",{type:'error',autoClose:3000});

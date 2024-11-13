@@ -50,5 +50,9 @@ export default{
   getImages(payload){
     this.setDomain();
     return Repository.get(`${resource}/${payload}/image`);
+  },
+  deleteImage(payload){
+    this.setDomain();
+    return Repository.delete(`firearmimage/${payload}`);
   }
 }

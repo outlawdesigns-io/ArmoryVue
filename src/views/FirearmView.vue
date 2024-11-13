@@ -1,5 +1,6 @@
 <script>
 import FirearmForm from '../components/FirearmForm.vue';
+import FirearmImageCarousel from '../components/FirearmImageCarousel.vue';
 import { useStore } from 'vuex';
 
 import {computed} from 'vue';
@@ -9,21 +10,27 @@ import CommonMethods from '../CommonMethods';
 export default{
   name:'FirearmView',
   components:{
-    FirearmForm
+    FirearmForm,
+    FirearmImageCarousel
   },
   props:{},
   computed:{
-    firearms(){
+    /*firearms(){
       return this.$store.state.firearms.map((f)=>{ f.Display = f.Model + " | " + f.Serial_Number; return f});
-    },
-    images(){
-      return this.$store.state.images.filter((e)=>{ return e.Firearm == this.editId}).map((e)=>{ e.imgStr = 'data:image/png;base64,' + CommonMethods.bufferToBase64(e.BinaryData.data); return e });
-    },
-    hasImages(){
-      return this.$store.state.images.length > 0;
-    },
-    fetchingImages(){
-      return this.$store.state.fetchingImages;
+    },*/
+    firearms(){
+      let calibers = this.$store.state.calibers;
+      let results = {};
+      this.$store.state.firearms.map((e)=>{
+        e.Display = e.Model + " | " + e.Serial_Number;
+        let caliberObj = calibers.filter((c)=>{ return c.Id == e.Caliber})[0];
+        if(results[caliberObj.Label]){
+          results[caliberObj.Label].push(e);
+        }else{
+          results[caliberObj.Label] = [e];
+        }
+      });
+      return results;
     }
   },
   methods:{
@@ -50,25 +57,25 @@ export default{
   <br>
   <hr>
   <v-list>
-    <v-list-item v-for="i in firearms" :key="i.Id" :title="i.Display" :class="{selected:i.Id == editId}">
-      <template v-slot:prepend>
-        <v-avatar color="grey-lighten-1">
-          <v-icon color="white">mdi-pistol</v-icon>
-        </v-avatar>
+    <v-list-group v-for="(group, caliberStr) in firearms" Value="itemIndex">
+      <template v-slot:activator="{props}">
+        <v-list-item :title="caliberStr" :subtitle="group.length" v-bind="props"></v-list-item>
       </template>
-      <template v-slot:append>
-        <v-btn color="grey-lighten-1" icon="mdi-pencil" variant="text" @click="setEdit(i.Id)"></v-btn>
-    </template>
-    <div v-if="i.Id == editId">
-      <FirearmForm :populateWith="i"></FirearmForm>
-      <v-carousel v-if="hasImages && !fetchingImages">
-        <v-carousel-item v-for="j in images" :src="j.imgStr"></v-carousel-item>
-      </v-carousel>
-      <div id="loading" v-if="fetchingImages">
-        <span>Fetching Images...</span>
+      <v-list-item v-for="i in group" :key="i.Id" :title="i.Display" :class="{selected:i.Id == editId}">
+        <template v-slot:prepend>
+          <v-avatar color="grey-lighten-1">
+            <v-icon color="white">mdi-pistol</v-icon>
+          </v-avatar>
+        </template>
+        <template v-slot:append>
+          <v-btn color="grey-lighten-1" icon="mdi-pencil" variant="text" @click="setEdit(i.Id)"></v-btn>
+      </template>
+      <div v-if="i.Id == editId">
+        <FirearmForm :populateWith="i"></FirearmForm>
+        <FirearmImageCarousel :populateWith="{FirearmId:i.Id}"></FirearmImageCarousel>
       </div>
-    </div>
-    </v-list-item>
+      </v-list-item>
+    </v-list-group>
   </v-list>
 </template>
 
